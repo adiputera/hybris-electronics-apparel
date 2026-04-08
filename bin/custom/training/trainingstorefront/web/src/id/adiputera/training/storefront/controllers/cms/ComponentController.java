@@ -46,13 +46,14 @@ public class ComponentController extends AbstractPageController {
         AbstractPageModel pageModel = getContentPageForLabelOrId(pageId);
         if (null != pageModel) {
             storeCmsPageInModel(model, pageModel);
+            final String slotPosition = parameters.get("slotPosition");
+            final String slotElement = parameters.get("slotElement");
+            final String slotClass = parameters.get("slotClass");
+            model.addAttribute("slotPosition", slotPosition);
+            model.addAttribute("slotElement", slotElement);
+            model.addAttribute("slotClass", slotClass);
+            return FRAGMENTS_CMS_CONTENT_SLOT;
         }
-        final String slotPosition = parameters.get("slotPosition");
-        final String slotElement = parameters.get("slotElement");
-        final String slotClass = parameters.get("slotClass");
-        model.addAttribute("slotPosition", slotPosition);
-        model.addAttribute("slotElement", slotElement);
-        model.addAttribute("slotClass", slotClass);
-        return FRAGMENTS_CMS_CONTENT_SLOT;
+        throw new CMSItemNotFoundException("Page not found");
     }
 }
