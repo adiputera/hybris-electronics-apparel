@@ -15,7 +15,8 @@
                      data-slot-class="row no-margin"
                      data-component-element="div"
                      data-component-class="col-xs-12 col-sm-6 no-space yComponentWrapper"
-                     data-page-id="${currentPage.uid}">
+                     data-page-id="${currentPage.uid}"
+                     data-callback="ACC.global.reprocessImages">
                 <div class="lazy-loading-placeholder"></div>
             </div>
             <%-- <cms:pageSlot position="Section2A" var="feature" element="div" class="row no-margin">
@@ -29,7 +30,8 @@
                      data-slot-class="row no-margin"
                      data-component-element="div"
                      data-component-class="col-xs-12 col-sm-6 no-space yComponentWrapper"
-                     data-page-id="${currentPage.uid}">
+                     data-page-id="${currentPage.uid}"
+                     data-callback="ACC.global.reprocessImages">
                 <div class="lazy-loading-placeholder"></div>
             </div>
             <%-- <cms:pageSlot position="Section2B" var="feature" element="div" class="row no-margin">
@@ -58,7 +60,8 @@
              data-slot-class="row no-margin"
              data-component-element="div"
              data-component-class="no-space yComponentWrapper"
-             data-page-id="${currentPage.uid}">
+             data-page-id="${currentPage.uid}"
+             data-callback="ACC.carousel.bindCarousel">
         <div class="lazy-loading-placeholder"></div>
     </div>
     <%-- <cms:pageSlot position="Section3" var="feature" element="div" class="row no-margin" >
@@ -71,7 +74,8 @@
              data-slot-class="row no-margin"
              data-component-element="div"
              data-component-class="col-xs-6 col-md-3 no-space yComponentWrapper"
-             data-page-id="${currentPage.uid}">
+             data-page-id="${currentPage.uid}"
+             data-callback="ACC.global.reprocessImages">
         <div class="lazy-loading-placeholder"></div>
     </div>
     <%-- <cms:pageSlot position="Section4" var="feature" element="div" class="row no-margin">
@@ -84,7 +88,8 @@
              data-slot-class=""
              data-component-element="div"
              data-component-class="yComponentWrapper"
-             data-page-id="${currentPage.uid}">
+             data-page-id="${currentPage.uid}"
+             data-callback="ACC.global.reprocessImages">
         <div class="lazy-loading-placeholder"></div>
     </div>
     <%-- <cms:pageSlot position="Section5" var="feature" element="div">

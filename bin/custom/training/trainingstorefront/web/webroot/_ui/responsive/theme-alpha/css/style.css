@@ -18657,3 +18657,13 @@ select[multiple].input-sm {
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
+
+.lazy-loading-placeholder {
+    min-height: 50px;
+    max-width: 99%;
+    margin: 3px;
+    background: #dbcccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

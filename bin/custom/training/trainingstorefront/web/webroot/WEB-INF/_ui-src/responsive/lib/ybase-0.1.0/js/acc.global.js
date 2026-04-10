@@ -216,3 +216,106 @@ function dropdownClearMenus(e) {
     return false
 };
 //***** Dropdown ends *****
+
+function fetchSlotComponents(element) {
+    // Check if element is still in the DOM before proceeding
+    if (!element || !element.parentNode) {
+        return;
+    }
+
+    // Check if element is already being fetched
+    if (element.getAttribute("data-fetching") === "true") {
+        return;
+    }
+
+    // Mark this element as currently being fetched
+    element.setAttribute("data-fetching", "true");
+
+    let params = {
+        slotPosition: element.getAttribute("data-slot-position"),
+        slotElement: element.getAttribute("data-slot-element"),
+        slotClass: element.getAttribute("data-slot-class"),
+        componentElement: element.getAttribute("data-component-element"),
+        componentClass: element.getAttribute("data-component-class"),
+        pageId: element.getAttribute("data-page-id")
+    };
+
+    let queryString = Object.keys(params)
+        .filter(function(key) { return params[key]; })
+        .map(function(key) { return key + "=" + encodeURIComponent(params[key]); })
+        .join("&");
+
+    fetch(ACC.config.contextPath +  "/cms-components?" + queryString)
+        .then(function(response) { return response.text(); })
+        .then(function(html) {
+            if (element && element.parentNode) {
+                element.outerHTML = html;
+
+                let callback = element.getAttribute("data-callback");
+                let resolved = callback ? resolveFunctionName(callback) : null;
+                if (resolved && typeof resolved.func === "function") {
+                    resolved.func.call(resolved.context);  // Call with preserved context
+                }
+            }
+        });
+}
+
+/**
+ * Resolves a dot-notation (or simple) function name string to the actual function and its context.
+ *
+ * Examples:
+ * - "alert" resolves to the alert function
+ * - "ACC.carousel.bindCarousel" resolves to ACC.carousel.bindCarousel
+ * - "myFunction" resolves to window.myFunction
+ *
+ * @param {string} functionName - Function name, can be simple (e.g., "alert") or dot-notation (e.g., "ACC.global.myFunction")
+ * @returns {Object|null} Object with {func: Function, context: Object} or null if function not found
+ *                        - func: The actual function to call
+ *                        - context: The object context (this) for the function
+ */
+function resolveFunctionName(functionName) {
+    // Split the function name by dots to get each property level
+    // Example: "ACC.carousel.bindCarousel" becomes ["ACC", "carousel", "bindCarousel"]
+    // Example: "alert" becomes ["alert"]
+    let parts = functionName.split(".");
+
+    // Start with the global window object
+    let func = window;
+
+    // Keep track of the parent object (context) for proper function invocation
+    let context = window;
+
+    // Traverse through each part of the dot-notation path
+    for (let i = 0; i < parts.length; i++) {
+        // Move context one level deeper (the current object becomes the next context)
+        context = func;
+
+        // Attempt to access the next property in the chain
+        // Example: window["ACC"] -> ACC["carousel"] -> carousel["bindCarousel"]
+        // Example: window["alert"] -> alert function
+        func = func[parts[i]];
+
+        // If any property in the chain doesn't exist, return null (function not found)
+        if (!func) return null;
+    }
+
+    // Return both the function and its context (parent object)
+    // This allows us to call it with proper 'this' binding: func.call(context)
+    return { func: func, context: context };
+}
+
+function isInOrAboveViewport(element) {
+    let rect = element.getBoundingClientRect();
+    return rect.top < (window.innerHeight || document.documentElement.clientHeight);
+}
+
+function loadVisibleSlots() {
+    let lazySlots = document.querySelectorAll(".lazy-slot-component:not([data-fetching='true'])");
+    lazySlots.forEach(function(slot) {
+        if (isInOrAboveViewport(slot)) {
+            fetchSlotComponents(slot);
+        }
+    });
+}
+
+window.addEventListener("scroll", loadVisibleSlots);
